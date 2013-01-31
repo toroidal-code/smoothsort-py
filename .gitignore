@@ -1,6 +1,8 @@
 # DS Stores
 .DS_Store
 
+.idea/
+
 *.py[cod]
 
 # C extensions

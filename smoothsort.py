@@ -2,22 +2,25 @@ def isAscending(v1, v2):
     """Comparator function"""
     return v1 <= v2
 
+
+def up(vb, vc):
+    temp = vb
+    vb += vc + 1
+    vc = temp
+    return vb, vc
+
+
+def down(vb, vc):
+    temp = vc
+    vc = vb - vc - 1
+    vb = temp
+    return vb, vc
+
+
 def smoothSort(A):
     """The main SmoothSort function
         Variables: q,r,p,b,c,r1,b1,c1,N
     """
-
-    def up(vb, vc):
-        temp = vb
-        vb += vc + 1
-        vc = temp
-        return vb, vc
-
-    def down(vb, vc):
-        temp = vc
-        vc = vb - vc - 1
-        vb = temp
-        return vb, vc
 
     def sift():
         r0 = smoothSort.r1
@@ -34,7 +37,6 @@ def smoothSort(A):
                 A[smoothSort.r1] = A[r2]
                 smoothSort.r1 = r2
                 smoothSort.b1, smoothSort.c1 = down(smoothSort.b1, smoothSort.c1)
-        #print((smoothSort.r1 - r0))
         if smoothSort.r1 != r0:
             A[smoothSort.r1] = T
 
@@ -106,10 +108,10 @@ def smoothSort(A):
             else:
                 trinkle()
             smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
-            smoothSort.p = smoothSort.p << 1
+            smoothSort.p <<= 1
             while smoothSort.b > 1:
                 smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
-                smoothSort.p = smoothSort.p << 1
+                smoothSort.p <<= 1
             smoothSort.p += 1
         smoothSort.q += 1
         smoothSort.r += 1
@@ -121,21 +123,21 @@ def smoothSort(A):
     while smoothSort.q > 1:
         smoothSort.q -= 1
         if smoothSort.b == 1:
-            smoothSort.r = smoothSort.r - 1
-            smoothSort.p = smoothSort.p - 1
+            smoothSort.r -= 1
+            smoothSort.p -= 1
             while (smoothSort.p & 1) == 0:
-                smoothSort.p = smoothSort.p >> 1
+                smoothSort.p >>= 1
                 smoothSort.b, smoothSort.c = up(smoothSort.b, smoothSort.c)
-        elif (smoothSort.b >= 3):
+        elif smoothSort.b >= 3:
             smoothSort.p -= 1
             smoothSort.r = smoothSort.r - smoothSort.b + smoothSort.c
             if smoothSort.p > 0:
                 semitrinkle()
             smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
             smoothSort.p = (smoothSort.p << 1) + 1
-            smoothSort.r = smoothSort.r + smoothSort.c
+            smoothSort.r += smoothSort.c
             semitrinkle()
             smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
             smoothSort.p = (smoothSort.p << 1) + 1
             # element q is done
-            # element 0 is down
+        # element 0 is done
