@@ -23,121 +23,125 @@ def smoothSort(A):
     """
 
     def sift():
-        r0 = smoothSort.r1
+        nonlocal r1, b1, c1
+        r0 = r1
         T = A[r0]
-        while smoothSort.b1 >= 3:
-            r2 = smoothSort.r1 - smoothSort.b1 + smoothSort.c1
+        while b1 >= 3:
+            r2 = r1 - b1 + c1
 
-            if not isAscending(A[smoothSort.r1 - 1], A[r2]):
-                r2 = smoothSort.r1 - 1
-                smoothSort.b1, smoothSort.c1 = down(smoothSort.b1, smoothSort.c1)
+            if not isAscending(A[r1 - 1], A[r2]):
+                r2 = r1 - 1
+                b1, c1 = down(b1, c1)
             if isAscending(A[r2], T):
-                smoothSort.b1 = 1
+                b1 = 1
             else:
-                A[smoothSort.r1] = A[r2]
-                smoothSort.r1 = r2
-                smoothSort.b1, smoothSort.c1 = down(smoothSort.b1, smoothSort.c1)
-        if smoothSort.r1 != r0:
-            A[smoothSort.r1] = T
+                A[r1] = A[r2]
+                r1 = r2
+                b1, c1 = down(b1, c1)
+        if r1 != r0:
+            A[r1] = T
 
     def trinkle():
-        p1 = smoothSort.p
-        smoothSort.b1 = smoothSort.b
-        smoothSort.c1 = smoothSort.c
-        r0 = smoothSort.r1
+        nonlocal p, b1, c1, b, c, r1
+        p1 = p
+        b1 = b
+        c1 = c
+        r0 = r1
         T = A[r0]
         while p1 > 0:
             while (p1 & 1) == 0:
                 p1 >>= 1
-                smoothSort.b1, smoothSort.c1 = up(smoothSort.b1, smoothSort.c1)
-            r3 = smoothSort.r1 - smoothSort.b1
+                b1, c1 = up(b1, c1)
+            r3 = r1 - b1
             if p1 == 1 or isAscending(A[r3], T):
                 p1 = 0
             else:
                 p1 -= 1
-                if smoothSort.b1 == 1:
-                    A[smoothSort.r1] = A[r3]
-                    smoothSort.r1 = r3
-                elif smoothSort.b1 >= 3:
-                    r2 = smoothSort.r1 - smoothSort.b1 + smoothSort.c1
-                    if not isAscending(A[smoothSort.r1 - 1], A[r2]):
-                        r2 = smoothSort.r1 - 1
-                        smoothSort.b1, smoothSort.c1 = down(smoothSort.b1, smoothSort.c1)
+                if b1 == 1:
+                    A[r1] = A[r3]
+                    r1 = r3
+                elif b1 >= 3:
+                    r2 = r1 - b1 + c1
+                    if not isAscending(A[r1 - 1], A[r2]):
+                        r2 = r1 - 1
+                        b1, c1 = down(b1, c1)
                         p1 <<= 1
                     if isAscending(A[r2], A[r3]):
-                        A[smoothSort.r1] = A[r3]
-                        smoothSort.r1 = r3
+                        A[r1] = A[r3]
+                        r1 = r3
                     else:
-                        A[smoothSort.r1] = A[r2]
-                        smoothSort.r1 = r2
-                        smoothSort.b1, smoothSort.c1 = down(smoothSort.b1, smoothSort.c1)
+                        A[r1] = A[r2]
+                        r1 = r2
+                        b1, c1 = down(b1, c1)
                         p1 = 0
-        if r0 != smoothSort.r1:
-            A[smoothSort.r1] = T
+        if r0 != r1:
+            A[r1] = T
         sift()
 
     def semitrinkle():
-        smoothSort.r1 = smoothSort.r - smoothSort.c
-        if not isAscending(A[smoothSort.r1], A[smoothSort.r]):
-            A[smoothSort.r], A[smoothSort.r1] = A[smoothSort.r1], A[smoothSort.r]
+        nonlocal r1, r, c
+        r1 = r - c
+        if not isAscending(A[r1], A[r]):
+            A[r], A[r1] = A[r1], A[r]
             trinkle()
 
     # Start of main function
-    smoothSort.N = len(A)
-    smoothSort.q = 1
-    smoothSort.r = 0
-    smoothSort.p = 1
-    smoothSort.b = 1
-    smoothSort.c = 1
+    N = len(A)
+    q = 1
+    r = 0
+    p = 1
+    b = 1
+    c = 1
     #building the tree
-    while smoothSort.q < smoothSort.N:
-        smoothSort.r1 = smoothSort.r
+    while q < N:
+        r1 = r
 
-        if (smoothSort.p & 7) == 3:
-            smoothSort.b1 = smoothSort.b
-            smoothSort.c1 = smoothSort.c
+        if (p & 7) == 3:
+            b1 = b
+            c1 = c
             sift()
-            smoothSort.p = (smoothSort.p + 1) >> 2
-            smoothSort.b, smoothSort.c = up(smoothSort.b, smoothSort.c)
-            smoothSort.b, smoothSort.c = up(smoothSort.b, smoothSort.c)
-        elif (smoothSort.p & 3) == 1:
-            if (smoothSort.q + smoothSort.c) < smoothSort.N:
-                smoothSort.b1 = smoothSort.b
-                smoothSort.c1 = smoothSort.c
+            p = (p + 1) >> 2
+            b, c = up(b, c)
+            b, c = up(b, c)
+        elif (p & 3) == 1:
+            if (q + c) < N:
+                b1 = b
+                c1 = c
                 sift()
             else:
                 trinkle()
-            smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
-            smoothSort.p <<= 1
-            while smoothSort.b > 1:
-                smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
-                smoothSort.p <<= 1
-            smoothSort.p += 1
-        smoothSort.q += 1
-        smoothSort.r += 1
+            b, c = down(b, c)
+            p <<= 1
+            while b > 1:
+                b, c = down(b, c)
+                p <<= 1
+            p += 1
+        q += 1
+        r += 1
 
-    smoothSort.r1 = smoothSort.r
+    r1 = r
     trinkle()
 
     #build the sorted array
-    while smoothSort.q > 1:
-        smoothSort.q -= 1
-        if smoothSort.b == 1:
-            smoothSort.r -= 1
-            smoothSort.p -= 1
-            while (smoothSort.p & 1) == 0:
-                smoothSort.p >>= 1
-                smoothSort.b, smoothSort.c = up(smoothSort.b, smoothSort.c)
-        elif smoothSort.b >= 3:
-            smoothSort.p -= 1
-            smoothSort.r = smoothSort.r - smoothSort.b + smoothSort.c
-            if smoothSort.p > 0:
+    while q > 1:
+        q -= 1
+        if b == 1:
+            r -= 1
+            p -= 1
+            while (p & 1) == 0:
+                p >>= 1
+                b, c = up(b, c)
+        elif b >= 3:
+            p -= 1
+            r = r - b + c
+            if p > 0:
                 semitrinkle()
-            smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
-            smoothSort.p = (smoothSort.p << 1) + 1
-            smoothSort.r += smoothSort.c
+            b, c = down(b, c)
+            p = (p << 1) + 1
+            r += c
             semitrinkle()
-            smoothSort.b, smoothSort.c = down(smoothSort.b, smoothSort.c)
-            smoothSort.p = (smoothSort.p << 1) + 1
+            b, c = down(b, c)
+            p = (p << 1) + 1
             # element q is done
-        # element 0 is done
+            # element 0 is done
+
